@@ -1,15 +1,24 @@
 import numpy as np
 
 def load_data(filename):
+    """
+    Load dataset from file and return X (features), y (class labels)
+    """
     data = np.loadtxt(filename)
     return data[:, 1:], data[:, 0].astype(int) #features, classes
 
 def nearest_neighbor_classify(train_X, train_y, test_point):
+    """
+    Classify a single test point using 1-Nearest Neighbor algorithm.
+    """
     distances = np.linalg.norm(train_X - test_point, axis = 1) # Calculate Euclidean distance from test point to all training points
     nearest_idx = np.argmin(distances) # Find index of nearest neighbor
     return train_y[nearest_idx] # Return class label of nearest neighbor
 
 def loo_accuracy(X, y, feature_indices):
+    """
+    Calculate Leave-One-Out Cross-Validation accuracy for given feature subset.
+    """
     if not feature_indices: # No features selected = 0% accuracy
         return 0.0
     
@@ -25,7 +34,7 @@ def loo_accuracy(X, y, feature_indices):
         # Test on i-th sample
         test_point = X_subset[i]
 
-        # Classify using nearest neighbour
+        # Classify using nearest neighbor
         predicted = nearest_neighbor_classify(train_X, train_y, test_point)
 
         # Count correct predictions
@@ -35,6 +44,13 @@ def loo_accuracy(X, y, feature_indices):
     return correct / len(X_subset)
 
 def forward_selection(X, y):
+    """ 
+    Forward Selection Overview:
+    1. Start with empty feature set
+    2. At each step, add each remaining feature
+    3. Select the feature that gives highest accuracy improvement
+    4. Continue until no improvement or all features added
+    """
     num_features = X.shape[1]
     selected = set() # Currently selected features
 
@@ -100,6 +116,13 @@ def forward_selection(X, y):
     return best_global_set, best_global_acc
 
 def backward_elimination(X, y):
+    """    
+    Backward Elimination Overview:
+    1. Start with all features selected
+    2. At each step, remove each remaining feature
+    3. Remove the feature whose elimination gives highest accuracy improvement
+    4. Continue until no improvement or only one feature remains
+    """
     num_features = X.shape[1]
     remaining = set(range(num_features)) # Start with all features
 
