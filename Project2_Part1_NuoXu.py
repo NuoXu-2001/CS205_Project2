@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 def load_data(filename):
     """
@@ -51,6 +52,8 @@ def forward_selection(X, y):
     3. Select the feature that gives highest accuracy improvement
     4. Continue until no improvement or all features added
     """
+    start_time = time.time()  # Start timing
+
     num_features = X.shape[1]
     selected = set() # Currently selected features
 
@@ -110,9 +113,13 @@ def forward_selection(X, y):
         else:
             break # No improvement, stop search
 
+    end_time = time.time()  # End timing
+    elapsed_time = end_time - start_time
+
     # Show the final result
     best_feature_list = sorted([f+1 for f in best_global_set])
     print(f"Finished search!! The best feature subset is {{{','.join(map(str, best_feature_list))}}}, which has an accuracy of {best_global_acc:.1%}")
+    print(f"Forward Selection completed in {elapsed_time:.2f} seconds")
     return best_global_set, best_global_acc
 
 def backward_elimination(X, y):
@@ -123,6 +130,8 @@ def backward_elimination(X, y):
     3. Remove the feature whose elimination gives highest accuracy improvement
     4. Continue until no improvement or only one feature remains
     """
+    start_time = time.time()  # Start timing
+
     num_features = X.shape[1]
     remaining = set(range(num_features)) # Start with all features
 
@@ -182,10 +191,14 @@ def backward_elimination(X, y):
             prev_best_acc = best_acc
         else:
             break # No improvement, stop search
+
+    end_time = time.time()  # End timing
+    elapsed_time = end_time - start_time
     
     # Show the final result
     best_feature_list = sorted([f+1 for f in best_global_set])
     print(f"Finished search!! The best feature subset is {{{','.join(map(str, best_feature_list))}}}, which has an accuracy of {best_global_acc:.1%}")
+    print(f"Backward Elimination completed in {elapsed_time:.2f} seconds")
     return best_global_set, best_global_acc
 
 def main():
